@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using RuCitizens.Database;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,27 +23,29 @@ namespace RuCitizens.Controllers
 
         // GET: api/<CitizensController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Citizen> Get()
         {
-            return new string[] { "value1", "value2" };
+            return this._databaseContext.Citizens.Select(x => x);
         }
 
         // GET api/<CitizensController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Citizen Get(int id)
         {
-            return "value";
+            return this._databaseContext.Citizens.Find(id);
         }
 
         // POST api/<CitizensController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Citizen value)
         {
+            this._databaseContext.Citizens.Add(value);
+            this._databaseContext.SaveChanges();
         }
 
         // PUT api/<CitizensController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public void Put(int id, [FromBody] Citizen value)
         {
         }
 
@@ -50,6 +53,9 @@ namespace RuCitizens.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            var toDelete = this._databaseContext.Citizens.Find(id);
+            this._databaseContext.Citizens.Remove(toDelete);
+            this._databaseContext.SaveChanges();
         }
     }
 }

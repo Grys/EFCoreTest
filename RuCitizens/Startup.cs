@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RuCitizens.Database;
 using System;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace RuCitizens
 {
@@ -23,9 +24,11 @@ namespace RuCitizens
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerGen();
 
             services.AddDbContext<DatabaseContext>(options =>
                         options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +38,12 @@ namespace RuCitizens
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Citizens API v1");
+            });
 
             app.UseHttpsRedirection();
 
@@ -60,7 +69,6 @@ namespace RuCitizens
             {
                 logger.LogError(ex.Message);
             }
-
         }
     }
 }
