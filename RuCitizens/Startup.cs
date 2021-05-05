@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,9 +7,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RuCitizens.Database;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RuCitizens
 {
@@ -60,7 +55,8 @@ namespace RuCitizens
             try
             {
                 DbInitializer.Initialize(dbContext);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.LogError(ex.Message);
             }
