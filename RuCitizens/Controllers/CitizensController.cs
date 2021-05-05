@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using System;
 using RuCitizens.Database;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Linq;
+using Microsoft.Extensions.Logging;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace RuCitizens.Controllers
 {
@@ -12,50 +11,73 @@ namespace RuCitizens.Controllers
     [ApiController]
     public class CitizensController : ControllerBase
     {
-        private readonly DatabaseContext _databaseContext;
+        private readonly CitizensRepository _citizensRepository;
         private readonly ILogger<CitizensController> _logger;
 
         public CitizensController(ILogger<CitizensController> logger, DatabaseContext databaseContex)
         {
             this._logger = logger;
-            this._databaseContext = databaseContex;
-        }
+            this._citizensRepository = new CitizensRepository(databaseContex);
+         }
 
         // GET: api/<CitizensController>
         [HttpGet]
-        public IEnumerable<Citizen> Get()
+        public IEnumerable<Citizen> Search(string fullName, DateTime? birthDate, DateTime? deathDate)
         {
-            return this._databaseContext.Citizens.Select(x => x);
+            return this._citizensRepository.FindByFIOAndDates(fullName, birthDate, deathDate);
         }
 
         // GET api/<CitizensController>/5
         [HttpGet("{id}")]
         public Citizen Get(int id)
         {
-            return this._databaseContext.Citizens.Find(id);
+            return this._citizensRepository.FindById(id);
         }
 
         // POST api/<CitizensController>
         [HttpPost]
         public void Post([FromBody] Citizen value)
         {
-            this._databaseContext.Citizens.Add(value);
-            this._databaseContext.SaveChanges();
+            try
+            {
+                value.Validate();
+                this._citizensRepository.Create(value);
+                this._citizensRepository.Save();
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
         }
 
         // PUT api/<CitizensController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Citizen value)
         {
+            try
+            {
+                value.Validate();
+                this._citizensRepository.Update(id, value);
+                this._citizensRepository.Save();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
         }
 
         // DELETE api/<CitizensController>/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            var toDelete = this._databaseContext.Citizens.Find(id);
-            this._databaseContext.Citizens.Remove(toDelete);
-            this._databaseContext.SaveChanges();
+            try
+            {
+                this._citizensRepository.Delete(id);
+                this._citizensRepository.Save();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
         }
     }
 }
