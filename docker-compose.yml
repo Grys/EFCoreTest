@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    ports:
+      - "1433:1433"
+    environment:
+        ACCEPT_EULA: "Y"
+        SA_PASSWORD: "123QWEasd"
+        MSSQL_PID: "Express" #Change to Express edition. Default SQL SERVER DEVELOPER Edition
+
+  rucitizens:
+    depends_on:
+      - "sqlserver"
+    image: ${DOCKER_REGISTRY-}rucitizens
+    build:
+      context: .
+      dockerfile: RuCitizens/Dockerfile
