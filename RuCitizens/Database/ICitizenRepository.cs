@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RuCitizens.Database
 {
@@ -13,6 +11,7 @@ namespace RuCitizens.Database
         Citizen FindBySnils(string snils);
         Citizen GetCitizen(int id);
         void Create(Citizen item);
+        void Create(IEnumerable<Citizen> items);
         void Update(int id, Citizen item);
         void Delete(int id);
         void Save();

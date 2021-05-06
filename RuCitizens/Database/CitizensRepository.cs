@@ -22,6 +22,17 @@ namespace RuCitizens.Database
             this._databaseContext.Citizens.Add(item);
         }
 
+        public void Create(IEnumerable<Citizen> items)
+        {
+            var toInsert = items.ToArray();
+
+            Array.ForEach(toInsert, item =>
+            {
+                item.Id = 0;
+            });
+
+            this._databaseContext.Citizens.AddRange(toInsert);
+        }
         public void Delete(int id)
         {
             var toDelete = this._databaseContext.Citizens.Find(id);
@@ -88,5 +99,6 @@ namespace RuCitizens.Database
         {
             this._databaseContext.SaveChanges();
         }
+
     }
 }
