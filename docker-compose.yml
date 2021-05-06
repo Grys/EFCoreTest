@@ -17,3 +17,5 @@ services:
     build:
       context: .
       dockerfile: RuCitizens/Dockerfile
+    ports:
+        - "16800:80"
